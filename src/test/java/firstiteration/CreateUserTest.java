@@ -1,23 +1,25 @@
 package firstiteration;
 
+import generators.RandomData;
 import io.restassured.RestAssured;
 import io.restassured.filter.log.RequestLoggingFilter;
 import io.restassured.filter.log.ResponseLoggingFilter;
-import io.restassured.http.ContentType;
-import org.apache.http.HttpStatus;
-import org.hamcrest.Matchers;
+import models.CreateUserRq;
+import models.CreateUserRs;
+import models.UserRole;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import requests.AdminCreateUserRequester;
+import specs.RequestSpecs;
+import specs.ResponseSpecs;
 
 import java.util.List;
 import java.util.stream.Stream;
 
-import static io.restassured.RestAssured.given;
-
-public class CreateUserTest {
+public class CreateUserTest extends BaseTest {
 
     @BeforeAll
     public static void setUpRestAssured() {
@@ -29,48 +31,36 @@ public class CreateUserTest {
 
     @Test
     public void adminCanCreateUserWithCorrectData() {
-        given()
-                .contentType(ContentType.JSON)
-                .accept(ContentType.JSON)
-                .header("Authorization", "Basic YWRtaW46YWRtaW4=")
-                .body("""
-                        {
-                            "username": "Semyon1234",
-                            "password": "Qwerty123!",
-                            "role": "USER"
-                        }
-                        """)
-                .post("http://localhost:4111/api/v1/admin/users")
-                .then()
-                .assertThat()
-                .statusCode(HttpStatus.SC_CREATED)
-                .body("username", Matchers.equalTo("Semyon1234"))
-                .body("password", Matchers.not(Matchers.equalTo("Qwerty123!")))
-                .body("role", Matchers.equalTo("USER"));
+        CreateUserRq createUserRq = CreateUserRq.builder()
+                .username(RandomData.getUsername())
+                .password(RandomData.getPassword())
+                .role(UserRole.USER.toString())
+                .build();
+
+        CreateUserRs createUserRs = new AdminCreateUserRequester(RequestSpecs.adminSpec(),
+                ResponseSpecs.entityWasCreated())
+                .post(createUserRq)
+                .extract().as(CreateUserRs.class);
+
+        softly.assertThat(createUserRs.getUsername()).isEqualTo(createUserRs.getUsername());
+        softly.assertThat(createUserRs.getPassword()).isNotEqualTo(createUserRs.getUsername());
+        softly.assertThat(createUserRs.getRole()).isEqualTo(createUserRs.getRole());
+
+
     }
 
     @ParameterizedTest
     @MethodSource("userInvalidDataProvider")
     public void adminCanCreateUserWithInvalidData(String username, String password, String role, String errorKey, List<String> errorText) {
-        String requestBody = String.format(
-                """
-                        {
-                            "username": "%s",
-                            "password": "%s",
-                            "role": "%s"
-                        }
-                """, username, password, role
-        );
-        given()
-                .contentType(ContentType.JSON)
-                .accept(ContentType.JSON)
-                .header("Authorization", "Basic YWRtaW46YWRtaW4=")
-                .body(requestBody)
-                .post("http://localhost:4111/api/v1/admin/users")
-                .then()
-                .assertThat()
-                .statusCode(HttpStatus.SC_BAD_REQUEST)
-                .body(errorKey, Matchers.containsInAnyOrder(errorText.toArray(new String[0])));
+        CreateUserRq createUserRq = CreateUserRq.builder()
+                .username(username)
+                .password(password)
+                .role(role)
+                .build();
+
+        new AdminCreateUserRequester(RequestSpecs.adminSpec(),
+                ResponseSpecs.requestReturnsBadRequest(errorKey, errorText))
+                .post(createUserRq);
     }
 
     public static Stream<Arguments> userInvalidDataProvider() {
