@@ -6,7 +6,8 @@ import io.restassured.filter.log.ResponseLoggingFilter;
 import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
 import models.LoginUserRq;
-import requests.LoginUserRequester;
+import requests.skeleton.Endpoint;
+import requests.skeleton.requests.CrudRequesters;
 
 import java.util.List;
 
@@ -19,7 +20,7 @@ public class RequestSpecs {
                 .setContentType(ContentType.JSON)
                 .setAccept(ContentType.JSON)
                 .addFilters(List.of(new RequestLoggingFilter(), new ResponseLoggingFilter()))
-                .setBaseUri("http://localhost:4111");
+                .setBaseUri("http://localhost:4111/api/v1");
     }
 
     public static RequestSpecification unauthSpec() {
@@ -33,9 +34,10 @@ public class RequestSpecs {
     }
 
     public static RequestSpecification authAsUser(String username, String password) {
-        String authToken = new LoginUserRequester(
+        String authToken = new CrudRequesters(
                 RequestSpecs.unauthSpec(),
-                ResponseSpecs.requestReturnsOK())
+                ResponseSpecs.requestReturnsOK(),
+                Endpoint.LOGIN)
                 .post(LoginUserRq.builder().username(username).password(password).build())
                 .extract()
                 .header("Authorization");
