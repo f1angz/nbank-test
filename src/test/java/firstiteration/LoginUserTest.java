@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import requests.skeleton.Endpoint;
 import requests.skeleton.requests.CrudRequesters;
 import requests.skeleton.requests.ValidatedCrudRequesters;
+import requests.steps.AdminSteps;
 import specs.RequestSpecs;
 import specs.ResponseSpecs;
 
@@ -45,13 +46,7 @@ public class LoginUserTest extends BaseTest {
 
     @Test
     public void userCanGenerateAuthTokenTest() {
-        CreateUserRq userRequest = EntityGenerator.generate(CreateUserRq.class);
-
-        new ValidatedCrudRequesters<CreateUserRs>(
-                RequestSpecs.adminSpec(),
-                ResponseSpecs.entityWasCreated(),
-                Endpoint.ADMIN_USER)
-                .post(userRequest);
+        CreateUserRq userRequest = AdminSteps.createUser();
 
         new CrudRequesters(RequestSpecs.unauthSpec(),
                 ResponseSpecs.requestReturnsOK(),

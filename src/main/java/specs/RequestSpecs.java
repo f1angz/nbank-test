@@ -10,9 +10,12 @@ import models.LoginUserRq;
 import requests.skeleton.Endpoint;
 import requests.skeleton.requests.CrudRequesters;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class RequestSpecs {
+    private static Map<String, String> authHeaders = new HashMap<>(Map.of("admin", "Basic YWRtaW46YWRtaW4="));
 
     private RequestSpecs() {}
 
@@ -30,18 +33,24 @@ public class RequestSpecs {
 
     public static RequestSpecification adminSpec() {
         return defaultRequestBuilder()
-                .addHeader("Authorization", "Basic YWRtaW46YWRtaW4=")
+                .addHeader("Authorization", authHeaders.get("admin"))
                 .build();
     }
 
     public static RequestSpecification authAsUser(String username, String password) {
-        String authToken = new CrudRequesters(
-                RequestSpecs.unauthSpec(),
-                ResponseSpecs.requestReturnsOK(),
-                Endpoint.LOGIN)
-                .post(LoginUserRq.builder().username(username).password(password).build())
-                .extract()
-                .header("Authorization");
+        String authToken;
+        if(!authHeaders.containsKey(username)) {
+            authToken = new CrudRequesters(
+                    RequestSpecs.unauthSpec(),
+                    ResponseSpecs.requestReturnsOK(),
+                    Endpoint.LOGIN)
+                    .post(LoginUserRq.builder().username(username).password(password).build())
+                    .extract()
+                    .header("Authorization");
+             authHeaders.put(username, authToken);
+        } else {
+            authToken = authHeaders.get(username);
+        }
         return defaultRequestBuilder()
                 .addHeader("Authorization", authToken)
                 .build();
