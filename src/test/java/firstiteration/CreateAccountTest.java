@@ -1,8 +1,7 @@
 package firstiteration;
 
-import generators.RandomData;
+import generators.EntityGenerator;
 import models.CreateUserRq;
-import models.UserRole;
 import org.junit.jupiter.api.Test;
 import requests.skeleton.Endpoint;
 import requests.skeleton.requests.ValidatedCrudRequesters;
@@ -13,11 +12,7 @@ public class CreateAccountTest extends BaseTest {
 
     @Test
     public void userCanCreateAccountTest() {
-        CreateUserRq userRequest = CreateUserRq.builder()
-                .username(RandomData.getUsername())
-                .password(RandomData.getPassword())
-                .role(UserRole.USER.toString())
-                .build();
+        CreateUserRq userRequest = EntityGenerator.generate(CreateUserRq.class);
 
         new ValidatedCrudRequesters<>(
                 RequestSpecs.adminSpec(),

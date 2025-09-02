@@ -1,5 +1,6 @@
 package firstiteration;
 
+import generators.EntityGenerator;
 import generators.RandomData;
 import io.restassured.RestAssured;
 import io.restassured.filter.log.RequestLoggingFilter;
@@ -44,11 +45,7 @@ public class LoginUserTest extends BaseTest {
 
     @Test
     public void userCanGenerateAuthTokenTest() {
-        CreateUserRq userRequest = CreateUserRq.builder()
-                .username(RandomData.getUsername())
-                .password(RandomData.getPassword())
-                .role(UserRole.USER.toString())
-                .build();
+        CreateUserRq userRequest = EntityGenerator.generate(CreateUserRq.class);
 
         new ValidatedCrudRequesters<CreateUserRs>(
                 RequestSpecs.adminSpec(),

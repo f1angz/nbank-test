@@ -1,5 +1,6 @@
 package firstiteration;
 
+import generators.EntityGenerator;
 import generators.RandomData;
 import io.restassured.RestAssured;
 import io.restassured.filter.log.RequestLoggingFilter;
@@ -8,6 +9,7 @@ import io.restassured.specification.RequestSpecification;
 import models.CreateUserRq;
 import models.CreateUserRs;
 import models.UserRole;
+import models.comparison.ModelComparator;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -34,11 +36,7 @@ public class CreateUserTest extends BaseTest {
 
     @Test
     public void adminCanCreateUserWithCorrectData() {
-        CreateUserRq createUserRq = CreateUserRq.builder()
-                .username(RandomData.getUsername())
-                .password(RandomData.getPassword())
-                .role(UserRole.USER.toString())
-                .build();
+        CreateUserRq createUserRq = EntityGenerator.generate(CreateUserRq.class);
 
         CreateUserRs createUserRs = new ValidatedCrudRequesters<CreateUserRs>(
                 RequestSpecs.adminSpec(),
@@ -46,9 +44,8 @@ public class CreateUserTest extends BaseTest {
                 Endpoint.ADMIN_USER)
                 .post(createUserRq);
 
-        softly.assertThat(createUserRs.getUsername()).isEqualTo(createUserRs.getUsername());
-        softly.assertThat(createUserRs.getPassword()).isNotEqualTo(createUserRs.getUsername());
-        softly.assertThat(createUserRs.getRole()).isEqualTo(createUserRs.getRole());
+        ModelComparator comparator = new ModelComparator();
+        comparator.assertObjectsEqual("CreateUserRule", createUserRq, createUserRs);
     }
 
     @ParameterizedTest
