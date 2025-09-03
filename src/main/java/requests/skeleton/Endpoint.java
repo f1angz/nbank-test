@@ -21,6 +21,11 @@ public enum Endpoint {
             "/auth/login",
             LoginUserRq.class,
             LoginUserRs.class
+    ),
+    DEPOSIT(
+            "/accounts/deposit",
+            DepositMoneyRs.class,
+            DepositMoneyRq.class
     );
 
     private final String url;
