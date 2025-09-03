@@ -1,17 +1,21 @@
 package firstiteration;
 
+import generators.EntityGenerator;
 import generators.RandomData;
 import io.restassured.RestAssured;
 import io.restassured.filter.log.RequestLoggingFilter;
 import io.restassured.filter.log.ResponseLoggingFilter;
 import models.CreateUserRq;
+import models.CreateUserRs;
 import models.LoginUserRq;
 import models.UserRole;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import requests.AdminCreateUserRequester;
-import requests.LoginUserRequester;
+import requests.skeleton.Endpoint;
+import requests.skeleton.requests.CrudRequesters;
+import requests.skeleton.requests.ValidatedCrudRequesters;
+import requests.steps.AdminSteps;
 import specs.RequestSpecs;
 import specs.ResponseSpecs;
 
@@ -34,27 +38,19 @@ public class LoginUserTest extends BaseTest {
                 .password("admin")
                 .build();
 
-        new LoginUserRequester(
+        new ValidatedCrudRequesters<CreateUserRs>(
                 RequestSpecs.unauthSpec(),
-                ResponseSpecs.requestReturnsOK())
-                .post(userRequest);
+                ResponseSpecs.requestReturnsOK(),
+                Endpoint.LOGIN);
     }
 
     @Test
     public void userCanGenerateAuthTokenTest() {
-        CreateUserRq userRequest = CreateUserRq.builder()
-                .username(RandomData.getUsername())
-                .password(RandomData.getPassword())
-                .role(UserRole.USER.toString())
-                .build();
+        CreateUserRq userRequest = AdminSteps.createUser();
 
-        new AdminCreateUserRequester(
-                RequestSpecs.adminSpec(),
-                ResponseSpecs.entityWasCreated())
-                .post(userRequest);
-
-        new LoginUserRequester(RequestSpecs.unauthSpec(),
-                ResponseSpecs.requestReturnsOK())
+        new CrudRequesters(RequestSpecs.unauthSpec(),
+                ResponseSpecs.requestReturnsOK(),
+                Endpoint.LOGIN)
                 .post(LoginUserRq.builder().username(userRequest.getUsername()).password(userRequest.getPassword()).build())
                 .header("Authorization", Matchers.notNullValue());
     }

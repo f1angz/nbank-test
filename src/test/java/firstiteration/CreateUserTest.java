@@ -1,18 +1,23 @@
 package firstiteration;
 
+import generators.EntityGenerator;
 import generators.RandomData;
 import io.restassured.RestAssured;
 import io.restassured.filter.log.RequestLoggingFilter;
 import io.restassured.filter.log.ResponseLoggingFilter;
+import io.restassured.specification.RequestSpecification;
 import models.CreateUserRq;
 import models.CreateUserRs;
 import models.UserRole;
+import models.comparison.ModelComparator;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import requests.AdminCreateUserRequester;
+import requests.skeleton.Endpoint;
+import requests.skeleton.requests.CrudRequesters;
+import requests.skeleton.requests.ValidatedCrudRequesters;
 import specs.RequestSpecs;
 import specs.ResponseSpecs;
 
@@ -31,22 +36,16 @@ public class CreateUserTest extends BaseTest {
 
     @Test
     public void adminCanCreateUserWithCorrectData() {
-        CreateUserRq createUserRq = CreateUserRq.builder()
-                .username(RandomData.getUsername())
-                .password(RandomData.getPassword())
-                .role(UserRole.USER.toString())
-                .build();
+        CreateUserRq createUserRq = EntityGenerator.generate(CreateUserRq.class);
 
-        CreateUserRs createUserRs = new AdminCreateUserRequester(RequestSpecs.adminSpec(),
-                ResponseSpecs.entityWasCreated())
-                .post(createUserRq)
-                .extract().as(CreateUserRs.class);
+        CreateUserRs createUserRs = new ValidatedCrudRequesters<CreateUserRs>(
+                RequestSpecs.adminSpec(),
+                ResponseSpecs.entityWasCreated(),
+                Endpoint.ADMIN_USER)
+                .post(createUserRq);
 
-        softly.assertThat(createUserRs.getUsername()).isEqualTo(createUserRs.getUsername());
-        softly.assertThat(createUserRs.getPassword()).isNotEqualTo(createUserRs.getUsername());
-        softly.assertThat(createUserRs.getRole()).isEqualTo(createUserRs.getRole());
-
-
+        ModelComparator comparator = new ModelComparator();
+        comparator.assertObjectsEqual("CreateUserRule", createUserRq, createUserRs);
     }
 
     @ParameterizedTest
@@ -58,8 +57,10 @@ public class CreateUserTest extends BaseTest {
                 .role(role)
                 .build();
 
-        new AdminCreateUserRequester(RequestSpecs.adminSpec(),
-                ResponseSpecs.requestReturnsBadRequest(errorKey, errorText))
+        new CrudRequesters(
+                RequestSpecs.adminSpec(),
+                ResponseSpecs.requestReturnsBadRequest(errorKey, errorText),
+                Endpoint.ADMIN_USER)
                 .post(createUserRq);
     }
 
@@ -71,7 +72,6 @@ public class CreateUserTest extends BaseTest {
                 Arguments.of("Abc$", "Password33$", "USER", "username", List.of("Username must contain only letters, digits, dashes, underscores, and dots")),
                 Arguments.of("A bc", "Password33$", "USER", "username", List.of("Username must contain only letters, digits, dashes, underscores, and dots"))
                 //Password validation
-                
         );
     }
 }
