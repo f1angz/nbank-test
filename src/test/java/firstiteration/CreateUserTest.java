@@ -3,7 +3,7 @@ package firstiteration;
 import generators.EntityGenerator;
 import models.CreateUserRq;
 import models.CreateUserRs;
-import models.comparison.ModelComparator;
+import models.comparison.JsonComparator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -29,8 +29,8 @@ public class CreateUserTest extends BaseTest {
                 Endpoint.ADMIN_USER)
                 .post(createUserRq);
 
-        ModelComparator comparator = new ModelComparator();
-        comparator.assertObjectsEqual("CreateUserRule", createUserRq, createUserRs);
+        JsonComparator comparator = new JsonComparator();
+        comparator.assertMatches(createUserRq, createUserRs);
     }
 
     @ParameterizedTest
