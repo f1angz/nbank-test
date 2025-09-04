@@ -11,7 +11,7 @@ import java.util.List;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class DepositMoneyRs extends BaseModel {
-    Integer id;
+    Long id;
     String accountNumber;
     Double balance;
     List<TransactionsRs> transactions;

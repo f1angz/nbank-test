@@ -9,6 +9,6 @@ import lombok.experimental.FieldDefaults;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class DepositMoneyRq  extends BaseModel {
-    Integer id;
+    Long id;
     Double balance;
 }

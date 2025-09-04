@@ -24,8 +24,8 @@ public enum Endpoint {
     ),
     DEPOSIT(
             "/accounts/deposit",
-            DepositMoneyRs.class,
-            DepositMoneyRq.class
+            DepositMoneyRq.class,
+            DepositMoneyRs.class
     );
 
     private final String url;
