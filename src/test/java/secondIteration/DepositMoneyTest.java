@@ -1,10 +1,7 @@
 package secondIteration;
 
 import firstiteration.BaseTest;
-import models.CreateAccountRs;
-import models.CreateUserRq;
-import models.DepositMoneyRq;
-import models.DepositMoneyRs;
+import models.*;
 import models.comparison.JsonComparator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -37,6 +34,7 @@ public class DepositMoneyTest extends BaseTest {
 
         JsonComparator comparator = new JsonComparator();
         comparator.assertMatches(deposit, depositMoneyRs);
+        softly.assertThat(depositMoneyRs.getTransactions().getFirst().getType()).isEqualTo(TransactionsType.DEPOSIT.toString());
     }
 
     @Test

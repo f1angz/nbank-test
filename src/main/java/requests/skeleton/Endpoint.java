@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import models.*;
 
+import java.util.List;
+
 @Getter
 @AllArgsConstructor
 public enum Endpoint {
