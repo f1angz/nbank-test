@@ -12,6 +12,13 @@ import java.util.Random;
 
 public class AccountStep {
 
+    public static CreateAccountRs createAccountForUser(String username, String password) {
+        return new CrudRequesters(
+                RequestSpecs.authAsUser(username, password),
+                ResponseSpecs.requestReturnsCreated(),
+                Endpoint.ACCOUNTS).post(null).extract().as(CreateAccountRs.class);
+    }
+
     public static DepositMoneyRq createAccountAndDeposit(String username, String password, Double balance) {
         CreateAccountRs account = new CrudRequesters(
                 RequestSpecs.authAsUser(username, password),
