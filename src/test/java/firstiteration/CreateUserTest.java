@@ -1,16 +1,9 @@
 package firstiteration;
 
 import generators.EntityGenerator;
-import generators.RandomData;
-import io.restassured.RestAssured;
-import io.restassured.filter.log.RequestLoggingFilter;
-import io.restassured.filter.log.ResponseLoggingFilter;
-import io.restassured.specification.RequestSpecification;
 import models.CreateUserRq;
 import models.CreateUserRs;
-import models.UserRole;
-import models.comparison.ModelComparator;
-import org.junit.jupiter.api.BeforeAll;
+import models.comparison.JsonComparator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -26,14 +19,6 @@ import java.util.stream.Stream;
 
 public class CreateUserTest extends BaseTest {
 
-    @BeforeAll
-    public static void setUpRestAssured() {
-        RestAssured.filters(
-                List.of(new RequestLoggingFilter(),
-                        new ResponseLoggingFilter())
-        );
-    }
-
     @Test
     public void adminCanCreateUserWithCorrectData() {
         CreateUserRq createUserRq = EntityGenerator.generate(CreateUserRq.class);
@@ -44,8 +29,8 @@ public class CreateUserTest extends BaseTest {
                 Endpoint.ADMIN_USER)
                 .post(createUserRq);
 
-        ModelComparator comparator = new ModelComparator();
-        comparator.assertObjectsEqual("CreateUserRule", createUserRq, createUserRs);
+        JsonComparator comparator = new JsonComparator();
+        comparator.assertMatches(createUserRq, createUserRs);
     }
 
     @ParameterizedTest

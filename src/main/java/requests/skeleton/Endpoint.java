@@ -21,6 +21,21 @@ public enum Endpoint {
             "/auth/login",
             LoginUserRq.class,
             LoginUserRs.class
+    ),
+    DEPOSIT(
+            "/accounts/deposit",
+            DepositMoneyRq.class,
+            DepositMoneyRs.class
+    ),
+    TRANSFER(
+            "accounts/transfer",
+            TransferRq.class,
+            TransferRs.class
+    ),
+    UPDATE_PROFILE(
+            "customer/profile",
+            UpdateProfileRq.class,
+            UpdateProfileRs.class
     );
 
     private final String url;
