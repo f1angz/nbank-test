@@ -1,14 +1,11 @@
 package requests.steps;
 
 import models.CreateAccountRs;
-import models.CreateUserRq;
 import models.DepositMoneyRq;
 import requests.skeleton.Endpoint;
 import requests.skeleton.requests.CrudRequesters;
 import specs.RequestSpecs;
 import specs.ResponseSpecs;
-
-import java.util.Random;
 
 public class AccountStep {
 
