@@ -72,11 +72,21 @@ public class JsonComparator {
 
     private Object getFieldValue(Object obj, String fieldName) {
         try {
-            Field field = obj.getClass().getDeclaredField(fieldName);
-            field.setAccessible(true);
-            return field.get(obj);
+            String[] parts = fieldName.split("\\.");
+            Object currentObj = obj;
+
+            for (String part : parts) {
+                if (currentObj == null) {
+                    return null; // чтобы корректно сравнивалось с null
+                }
+                Field field = currentObj.getClass().getDeclaredField(part);
+                field.setAccessible(true);
+                currentObj = field.get(currentObj);
+            }
+            return currentObj;
         } catch (Exception e) {
             throw new AssertionError("Ошибка доступа к полю " + fieldName + " в " + obj.getClass().getSimpleName(), e);
         }
     }
+
 }

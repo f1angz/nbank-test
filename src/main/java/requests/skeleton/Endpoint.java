@@ -33,6 +33,11 @@ public enum Endpoint {
             "accounts/transfer",
             TransferRq.class,
             TransferRs.class
+    ),
+    UPDATE_PROFILE(
+            "customer/profile",
+            UpdateProfileRq.class,
+            UpdateProfileRs.class
     );
 
     private final String url;

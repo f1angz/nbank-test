@@ -47,4 +47,16 @@ public class CrudRequesters extends HttpRequest implements CrudEndpointInterface
     public Object delete(long id) {
         return null;
     }
+
+    @Override
+    public ValidatableResponse put(BaseModel model) {
+        var body = model == null ? "" : model;
+        return given()
+                .spec(requestSpecification)
+                .body(body)
+                .put(endpoint.getUrl())
+                .then()
+                .assertThat()
+                .spec(responseSpecification);
+    }
 }
