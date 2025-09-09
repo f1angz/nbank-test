@@ -16,12 +16,7 @@ public class AccountStep {
                 Endpoint.ACCOUNTS).post(null).extract().as(CreateAccountRs.class);
     }
 
-    public static DepositMoneyRq createAccountAndDeposit(String username, String password, Double balance) {
-        CreateAccountRs account = new CrudRequesters(
-                RequestSpecs.authAsUser(username, password),
-                ResponseSpecs.requestReturnsCreated(),
-                Endpoint.ACCOUNTS).post(null).extract().as(CreateAccountRs.class);
-
+    public static DepositMoneyRq createAccountAndDeposit(CreateAccountRs account, Double balance) {
         return DepositMoneyRq.builder()
                 .id(account.getId())
                 .balance(balance)

@@ -1,9 +1,6 @@
 package requests.steps;
 
-import models.CreateAccountRs;
-import models.DepositMoneyRq;
-import models.DepositMoneyRs;
-import models.TransferRq;
+import models.*;
 import requests.skeleton.Endpoint;
 import requests.skeleton.requests.CrudRequesters;
 import specs.RequestSpecs;
@@ -11,13 +8,14 @@ import specs.ResponseSpecs;
 import utils.TestDataGenerator;
 
 public class TransferStep {
-    public static final String errorText = "Invalid transfer: insufficient funds or invalid accounts";
 
     public static TransferRq createValidTransferRequest(String username, String password, Double amount) {
-        DepositMoneyRq deposit = AccountStep.createAccountAndDeposit(
-                username,
-                password,
-                TestDataGenerator.randomBalance());
+        CreateUserRq user = AdminSteps.createUser();
+        CreateAccountRs account = AccountStep.createAccountForUser(user.getUsername(), user.getPassword());
+        DepositMoneyRq deposit = DepositMoneyRq.builder()
+                .id(account.getId())
+                .balance(TestDataGenerator.randomBalance())
+                .build();
 
         new CrudRequesters(
                 RequestSpecs.authAsUser(username, password),

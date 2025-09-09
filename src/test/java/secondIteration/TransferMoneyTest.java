@@ -14,6 +14,7 @@ import requests.steps.AdminSteps;
 import requests.steps.TransferStep;
 import specs.RequestSpecs;
 import specs.ResponseSpecs;
+import utils.TestDataGenerator;
 
 import java.util.stream.Stream;
 
@@ -26,7 +27,7 @@ public class TransferMoneyTest extends BaseTest {
 
         TransferRq transferRq = TransferStep.createValidTransferRequest(user.getUsername(),
                 user.getPassword(),
-                100.0);
+                TestDataGenerator.randomSmallBalance());
 
         TransferRs transferRs = new CrudRequesters(
                 RequestSpecs.authAsUser(user.getUsername(), user.getPassword()),
@@ -35,16 +36,18 @@ public class TransferMoneyTest extends BaseTest {
                 .post(transferRq).extract().as(TransferRs.class);
 
         comparator.assertMatches(transferRq, transferRs);
-        softly.assertThat(transferRs.getMessage()).isEqualTo("Transfer successful");
+        softly.assertThat(transferRs.getMessage()).isEqualTo(SUCCESS_TRANSFER);
     }
 
     @Test
     public void transferWithInsufficientBalance() {
         CreateUserRq user = AdminSteps.createUser();
-        DepositMoneyRq deposit = AccountStep.createAccountAndDeposit(
-                user.getUsername(),
-                user.getPassword(),
-                50.0);
+        CreateAccountRs account = AccountStep.createAccountForUser(user.getUsername(), user.getPassword());
+        DepositMoneyRq deposit = DepositMoneyRq.builder()
+                .id(account.getId())
+                .balance(TestDataGenerator.randomSmallBalance())
+                .build();
+
 
         new CrudRequesters(
                 RequestSpecs.authAsUser(user.getUsername(), user.getPassword()),
@@ -57,12 +60,12 @@ public class TransferMoneyTest extends BaseTest {
         TransferRq transferRq = TransferRq.builder()
                 .senderAccountId(deposit.getId())
                 .receiverAccountId(receiverAccount.getId())
-                .amount(100.0)
+                .amount(TestDataGenerator.randomBalance())
                 .build();
 
         new CrudRequesters(
                 RequestSpecs.authAsUser(user.getUsername(), user.getPassword()),
-                ResponseSpecs.requestReturnsBadRequest(TransferStep.errorText),
+                ResponseSpecs.requestReturnsBadRequest(INVALID_TRANSFER),
                 Endpoint.TRANSFER)
                 .post(transferRq);
     }
@@ -73,12 +76,12 @@ public class TransferMoneyTest extends BaseTest {
 
         TransferRq transferRq = TransferStep.createValidTransferRequest(user.getUsername(),
                 user.getPassword(),
-                100.0);
+                TestDataGenerator.randomBalance());
         transferRq.setReceiverAccountId(Long.MAX_VALUE);
 
         new CrudRequesters(
                 RequestSpecs.authAsUser(user.getUsername(), user.getPassword()),
-                ResponseSpecs.requestReturnsBadRequest(TransferStep.errorText),
+                ResponseSpecs.requestReturnsBadRequest(INVALID_TRANSFER),
                 Endpoint.TRANSFER)
                 .post(transferRq);
     }
@@ -92,12 +95,12 @@ public class TransferMoneyTest extends BaseTest {
         TransferRq transferRq = TransferRq.builder()
                 .senderAccountId(Long.MAX_VALUE)
                 .receiverAccountId(receiverAccount.getId())
-                .amount(50.0)
+                .amount(TestDataGenerator.randomSmallBalance())
                 .build();
 
         new CrudRequesters(
                 RequestSpecs.authAsUser(user.getUsername(), user.getPassword()),
-                ResponseSpecs.requestReturnsForbidden("Unauthorized access to account"),
+                ResponseSpecs.requestReturnsForbidden(UNAUTH_ACCESS),
                 Endpoint.TRANSFER)
                 .post(transferRq);
     }
@@ -109,7 +112,7 @@ public class TransferMoneyTest extends BaseTest {
         TransferRq transferRq = TransferStep.createValidTransferRequest(
                 user.getUsername(),
                 user.getPassword(),
-                50.0);
+                TestDataGenerator.randomSmallBalance());
 
         new CrudRequesters(
                 RequestSpecs.unauthSpec(),
@@ -124,12 +127,12 @@ public class TransferMoneyTest extends BaseTest {
 
         TransferRq transferRq = TransferStep.createValidTransferRequest(user.getUsername(),
                 user.getPassword(),
-                100.0);
+                TestDataGenerator.randomBalance());
         transferRq.setReceiverAccountId(transferRq.getSenderAccountId());
 
         new CrudRequesters(
                 RequestSpecs.authAsUser(user.getUsername(), user.getPassword()),
-                ResponseSpecs.requestReturnsBadRequest(TransferStep.errorText),
+                ResponseSpecs.requestReturnsBadRequest(INVALID_TRANSFER),
                 Endpoint.TRANSFER)
                 .post(transferRq);
     }
@@ -141,12 +144,12 @@ public class TransferMoneyTest extends BaseTest {
 
         TransferRq transferRq = TransferStep.createValidTransferRequest(user.getUsername(),
                 user.getPassword(),
-                50.0);
+                TestDataGenerator.randomSmallBalance());
         transferRq.setAmount(amount);
 
         new CrudRequesters(
                 RequestSpecs.authAsUser(user.getUsername(), user.getPassword()),
-                ResponseSpecs.requestReturnsBadRequest(TransferStep.errorText),
+                ResponseSpecs.requestReturnsBadRequest(INVALID_TRANSFER),
                 Endpoint.TRANSFER)
                 .post(transferRq);
     }

@@ -29,7 +29,7 @@ public class CrudRequesters extends HttpRequest implements CrudEndpointInterface
     }
 
     @Override
-    public Object get(Long id) {
+    public ValidatableResponse get(Long id) {
         return given()
                 .spec(requestSpecification)
                 .get(endpoint.getUrl().replace("{id}", id.toString()))

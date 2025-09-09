@@ -36,7 +36,13 @@ public enum Endpoint {
             "customer/profile",
             UpdateProfileRq.class,
             UpdateProfileRs.class
+    ),
+    GET_TRANSACTIONS(
+            "accounts/{id}/transactions",
+            BaseModel.class,
+            TransferRs.class
     );
+
 
     private final String url;
     private final Class<? extends BaseModel> requestDto;

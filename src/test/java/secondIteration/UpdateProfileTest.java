@@ -14,7 +14,6 @@ import requests.skeleton.Endpoint;
 import requests.skeleton.requests.CrudRequesters;
 import requests.skeleton.requests.ValidatedCrudRequesters;
 import requests.steps.AdminSteps;
-import requests.steps.ProfileStep;
 import specs.RequestSpecs;
 import specs.ResponseSpecs;
 
@@ -38,7 +37,7 @@ public class UpdateProfileTest extends BaseTest {
                 .put(updateRequest);
 
         comparator.assertMatches(updateRequest, response);
-        assertThat(response.getMessage()).isEqualTo(ProfileStep.SUCCESS_MESSAGE);
+        assertThat(response.getMessage()).isEqualTo(SUCCESS_EDIT);
     }
 
     @Test
@@ -58,7 +57,7 @@ public class UpdateProfileTest extends BaseTest {
         UpdateProfileRq updateRequest = UpdateProfileRq.builder().name(invalidName).build();
 
         new CrudRequesters(RequestSpecs.authAsUser(user.getUsername(), user.getPassword()),
-                ResponseSpecs.requestReturnsBadRequest(ProfileStep.ERROR_MESSAGE),
+                ResponseSpecs.requestReturnsBadRequest(EDIT_NAME_ERROR),
                 Endpoint.UPDATE_PROFILE)
                 .put(updateRequest);
     }
