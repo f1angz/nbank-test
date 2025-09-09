@@ -8,4 +8,8 @@ public class TestDataGenerator {
     public static double randomBalance() {
         return RANDOM.nextDouble(100.0, 1000.0);
     }
+
+    public static double randomSmallBalance() {
+        return RANDOM.nextDouble(1.0, 100.0);
+    }
 }

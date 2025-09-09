@@ -9,6 +9,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import requests.skeleton.Endpoint;
 import requests.skeleton.requests.CrudRequesters;
+import requests.skeleton.requests.ValidatedCrudRequesters;
 import requests.steps.AccountStep;
 import requests.steps.AdminSteps;
 import specs.RequestSpecs;
@@ -17,20 +18,24 @@ import utils.TestDataGenerator;
 
 import java.util.stream.Stream;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 public class DepositMoneyTest extends BaseTest {
 
     @Test
     public void authUserCanDepositMoneyIntoAccountTest() {
         CreateUserRq user = AdminSteps.createUser();
-        DepositMoneyRq deposit = AccountStep.createAccountAndDeposit(user.getUsername(),
-                user.getPassword(),
-                TestDataGenerator.randomBalance());
+        CreateAccountRs account = AccountStep.createAccountForUser(user.getUsername(), user.getPassword());
+        DepositMoneyRq deposit = DepositMoneyRq.builder()
+                .id(account.getId())
+                .balance(TestDataGenerator.randomBalance())
+                .build();
 
-        DepositMoneyRs depositMoneyRs = new CrudRequesters(
+        DepositMoneyRs depositMoneyRs = new ValidatedCrudRequesters<DepositMoneyRs>(
                 RequestSpecs.authAsUser(user.getUsername(), user.getPassword()),
                 ResponseSpecs.requestReturnsOK(),
                 Endpoint.DEPOSIT)
-                .post(deposit).extract().as(DepositMoneyRs.class);
+                .post(deposit);
 
         JsonComparator comparator = new JsonComparator();
         comparator.assertMatches(deposit, depositMoneyRs);
@@ -40,30 +45,43 @@ public class DepositMoneyTest extends BaseTest {
     @Test
     public void unauthUserCannotDepositMoneyIntoAccountTest() {
         CreateUserRq user = AdminSteps.createUser();
-        DepositMoneyRq deposit = AccountStep.createAccountAndDeposit(user.getUsername(),
-                user.getPassword(),
-                TestDataGenerator.randomBalance());
+        CreateAccountRs account = AccountStep.createAccountForUser(user.getUsername(), user.getPassword());
+        DepositMoneyRq deposit = DepositMoneyRq.builder()
+                .id(account.getId())
+                .balance(TestDataGenerator.randomBalance())
+                .build();
 
         new CrudRequesters(
                 RequestSpecs.unauthSpec(),
                 ResponseSpecs.requestReturnsUnauth(),
                 Endpoint.DEPOSIT)
                 .post(deposit);
+
+        assertThat(new CrudRequesters(RequestSpecs.authAsUser(user.getUsername(), user.getPassword()),
+                ResponseSpecs.requestReturnsOK(),
+                Endpoint.GET_TRANSACTIONS)
+                .get(account.getId()).extract().jsonPath().getList("")).isEmpty();
     }
 
     @ParameterizedTest
     @MethodSource("invalidBalanceDataProvider")
     public void authUserCannotDepositMoneyIfBalanceDataIsNotCorrectTest(Double balance, String error) {
         CreateUserRq user = AdminSteps.createUser();
-
-        DepositMoneyRq deposit = AccountStep.createAccountAndDeposit(user.getUsername(),
-                user.getPassword(),
-                balance);
+        CreateAccountRs account = AccountStep.createAccountForUser(user.getUsername(), user.getPassword());
+        DepositMoneyRq deposit = DepositMoneyRq.builder()
+                .id(account.getId())
+                .balance(balance)
+                .build();
 
         new CrudRequesters(
                 RequestSpecs.authAsUser(user.getUsername(), user.getPassword()),
                 ResponseSpecs.requestReturnsBadRequest(error),
                 Endpoint.DEPOSIT).post(deposit);
+
+        assertThat(new CrudRequesters(RequestSpecs.authAsUser(user.getUsername(), user.getPassword()),
+                ResponseSpecs.requestReturnsOK(),
+                Endpoint.GET_TRANSACTIONS)
+                .get(account.getId()).extract().jsonPath().getList("")).isEmpty();
     }
 
     @ParameterizedTest
@@ -83,14 +101,14 @@ public class DepositMoneyTest extends BaseTest {
 
         new CrudRequesters(
                 RequestSpecs.authAsUser(user.getUsername(), user.getPassword()),
-                ResponseSpecs.requestReturnsForbidden("Unauthorized access to account"),
+                ResponseSpecs.requestReturnsForbidden(UNAUTH_ACCESS),
                 Endpoint.DEPOSIT).post(deposit);
     }
 
     public static Stream<Arguments> invalidBalanceDataProvider() {
         return Stream.of(
-                Arguments.of(-1.0, "Invalid account or amount"),
-                Arguments.of(0.0, "Invalid account or amount")
+                Arguments.of(-1.0, INVALID_ACCOUNT),
+                Arguments.of(0.0, INVALID_ACCOUNT)
         );
     }
 
