@@ -1,6 +1,6 @@
 package secondIteration;
 
-import firstiteration.BaseTest;
+import firstiteration.api.BaseTest;
 import models.*;
 import models.comparison.JsonComparator;
 import org.junit.jupiter.api.Test;

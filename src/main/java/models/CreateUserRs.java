@@ -16,6 +16,6 @@ public class CreateUserRs extends BaseModel {
     String password;
     String name;
     String role;
-    List<String> accounts;
+    List<TransactionsRs> accounts;
 
 }

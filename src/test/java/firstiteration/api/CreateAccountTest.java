@@ -1,4 +1,4 @@
-package firstiteration;
+package firstiteration.api;
 
 import models.CreateUserRq;
 import org.junit.jupiter.api.Test;

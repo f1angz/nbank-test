@@ -1,6 +1,6 @@
 package secondIteration;
 
-import firstiteration.BaseTest;
+import firstiteration.api.BaseTest;
 import generators.EntityGenerator;
 import models.CreateUserRq;
 import models.UpdateProfileRq;

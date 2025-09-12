@@ -1,4 +1,4 @@
-package firstiteration;
+package firstiteration.api;
 
 import generators.EntityGenerator;
 import models.CreateUserRq;
