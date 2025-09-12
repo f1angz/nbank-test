@@ -1,18 +1,18 @@
 package firstiteration.api;
 
-import generators.EntityGenerator;
-import models.CreateUserRq;
-import models.CreateUserRs;
-import models.comparison.JsonComparator;
+import api.generators.EntityGenerator;
+import api.models.CreateUserRq;
+import api.models.CreateUserRs;
+import api.models.comparison.JsonComparator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import requests.skeleton.Endpoint;
-import requests.skeleton.requests.CrudRequesters;
-import requests.skeleton.requests.ValidatedCrudRequesters;
-import specs.RequestSpecs;
-import specs.ResponseSpecs;
+import api.requests.skeleton.Endpoint;
+import api.requests.skeleton.requests.CrudRequesters;
+import api.requests.skeleton.requests.ValidatedCrudRequesters;
+import api.specs.RequestSpecs;
+import api.specs.ResponseSpecs;
 
 import java.util.List;
 import java.util.stream.Stream;
