@@ -4,6 +4,9 @@ import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 import lombok.Getter;
 import org.openqa.selenium.By;
+import ui.elements.UserBage;
+
+import java.util.List;
 
 import static com.codeborne.selenide.Selenide.$;
 
@@ -24,8 +27,9 @@ public class AdminPanel extends BasePage<AdminPanel> {
         return this;
     }
 
-    public ElementsCollection getAlLUsers() {
-        return $(By.xpath(("//*[text()='All Users']"))).parent().findAll("li");
+    public List<UserBage> getAlLUsers() {
+        ElementsCollection collection = $(By.xpath(("//*[text()='All Users']"))).parent().findAll("li");
+        return generatePageElements(collection, UserBage::new);
     }
 
 

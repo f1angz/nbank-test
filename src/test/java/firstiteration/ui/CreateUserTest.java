@@ -5,7 +5,7 @@ import api.models.CreateUserRq;
 import api.models.CreateUserRs;
 import api.models.comparison.JsonComparator;
 import api.requests.steps.AdminSteps;
-import com.codeborne.selenide.Condition;
+import common.annotations.AdminSession;
 import org.junit.jupiter.api.Test;
 import ui.pages.AdminPanel;
 import ui.pages.BankAlerts;
@@ -15,18 +15,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class CreateUserTest extends BaseUiTest {
 
     @Test
+    @AdminSession
     public void adminCanCreateUserTest() {
-        CreateUserRq admin = CreateUserRq.getAdmin();
-
-        authAsUser(admin);
-
         CreateUserRq newUser = EntityGenerator.generate(CreateUserRq.class);
 
-        new AdminPanel().open().createUser(newUser.getUsername(), newUser.getPassword())
+        assertThat(new AdminPanel().open().createUser(newUser.getUsername(), newUser.getPassword())
                 .checkAlertMessageAndAccept(BankAlerts.USER_CREATED_SUCCESSFULLY.getMessage())
                 .getAlLUsers()
-                .findBy(Condition.exactText(newUser.getUsername() + "\nUSER"))
-                .shouldBe(Condition.visible);
+                .stream().anyMatch(userBage -> userBage.getUsername().equals(newUser.getUsername()))).isTrue();
 
         CreateUserRs createdUser = AdminSteps.getAllUsers().stream()
                 .filter(user -> user.getUsername().equals(newUser.getUsername())).findFirst().get();
@@ -36,17 +32,14 @@ public class CreateUserTest extends BaseUiTest {
     }
 
     @Test
+    @AdminSession
     public void adminCannotCreateUserWithInvalidDataTest() {
-        CreateUserRq admin = CreateUserRq.getAdmin();
-
-        authAsUser(admin);
-
         CreateUserRq newUser = EntityGenerator.generate(CreateUserRq.class);
         newUser.setUsername("a");
 
-        new AdminPanel().open().createUser(newUser.getUsername(), newUser.getPassword())
+        assertThat(new AdminPanel().open().createUser(newUser.getUsername(), newUser.getPassword())
                 .checkAlertMessageAndAccept(BankAlerts.USERNAME_MUST_BE_BETWEEN_3_AND_15_CHARACTERS.getMessage())
-                .getAlLUsers().findBy(Condition.exactText(newUser.getUsername() + "\nUSER")).shouldNotBe(Condition.exist);
+                .getAlLUsers().stream().noneMatch(userBage -> userBage.getUsername().equals(newUser.getUsername()))).isTrue();
 
 
         long userWithSameUsernameAsNewUser = AdminSteps.getAllUsers().stream()
