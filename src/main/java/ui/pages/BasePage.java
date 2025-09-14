@@ -5,6 +5,7 @@ import api.specs.RequestSpecs;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
+import lombok.Getter;
 import org.openqa.selenium.Alert;
 import ui.elements.BaseElement;
 
@@ -28,12 +29,20 @@ public abstract class BasePage<T extends BasePage> {
         return Selenide.page(pageClass);
     }
 
-    public T checkAlertMessageAndAccept(String bankAlerts) {
+    public T checkAlertMessageAndAccept(BankAlerts bankAlert) {
         Alert alert = switchTo().alert();
-        assertThat(alert.getText()).contains(bankAlerts);
+        String actual = alert.getText();
+
+        if (bankAlert.isRegex()) {
+            assertThat(actual).matches(bankAlert.getMessage());
+        } else {
+            assertThat(actual).contains(bankAlert.getMessage());
+        }
+
         alert.accept();
         return (T) this;
     }
+
 
     public static void authAsUser(String username, String password) {
         Selenide.open("/login");

@@ -1,8 +1,8 @@
 package api.requests.steps;
 
-import api.models.CreateAccountRs;
-import api.models.CreateUserRs;
+import api.models.*;
 import api.requests.skeleton.Endpoint;
+import api.requests.skeleton.requests.CrudRequesters;
 import api.requests.skeleton.requests.ValidatedCrudRequesters;
 import api.specs.RequestSpecs;
 import api.specs.ResponseSpecs;
@@ -24,5 +24,33 @@ public class UserSteps {
                 ResponseSpecs.requestReturnsOK(),
                 Endpoint.CUSTOMER_ACCOUNTS
         ).getAll(CreateAccountRs[].class);
+    }
+
+    public CreateAccountRs createAccount() {
+        return new ValidatedCrudRequesters<CreateAccountRs>(
+                RequestSpecs.authAsUser(username, password),
+                ResponseSpecs.requestReturnsCreated(),
+                Endpoint.ACCOUNTS).post(null);
+    }
+
+    public List<TransactionsRs> getAllTransactions(long id) {
+        return new CrudRequesters(RequestSpecs.authAsUser(username, password),
+                ResponseSpecs.requestReturnsOK(),
+                Endpoint.GET_TRANSACTIONS)
+                .get(id).extract().jsonPath().getList("");
+    }
+
+    public void depositMoney(long id, double amount) {
+        new CrudRequesters(RequestSpecs.authAsUser(username, password),
+                ResponseSpecs.requestReturnsOK(),
+                Endpoint.DEPOSIT)
+                .post(DepositMoneyRq.builder().id(id).balance(amount).build());
+    }
+
+    public CustomerRs getUserProfile() {
+        return new ValidatedCrudRequesters<CustomerRs>(RequestSpecs.authAsUser(username, password),
+                ResponseSpecs.requestReturnsOK(),
+                Endpoint.GET_PROFILE)
+                .get(null);
     }
 }

@@ -20,7 +20,7 @@ public class CreateUserTest extends BaseUiTest {
         CreateUserRq newUser = EntityGenerator.generate(CreateUserRq.class);
 
         assertThat(new AdminPanel().open().createUser(newUser.getUsername(), newUser.getPassword())
-                .checkAlertMessageAndAccept(BankAlerts.USER_CREATED_SUCCESSFULLY.getMessage())
+                .checkAlertMessageAndAccept(BankAlerts.USER_CREATED_SUCCESSFULLY)
                 .getAlLUsers()
                 .stream().anyMatch(userBage -> userBage.getUsername().equals(newUser.getUsername()))).isTrue();
 
@@ -38,7 +38,7 @@ public class CreateUserTest extends BaseUiTest {
         newUser.setUsername("a");
 
         assertThat(new AdminPanel().open().createUser(newUser.getUsername(), newUser.getPassword())
-                .checkAlertMessageAndAccept(BankAlerts.USERNAME_MUST_BE_BETWEEN_3_AND_15_CHARACTERS.getMessage())
+                .checkAlertMessageAndAccept(BankAlerts.USERNAME_MUST_BE_BETWEEN_3_AND_15_CHARACTERS)
                 .getAlLUsers().stream().noneMatch(userBage -> userBage.getUsername().equals(newUser.getUsername()))).isTrue();
 
 

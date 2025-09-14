@@ -10,7 +10,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class CustomerRs {
+public class CustomerRs extends BaseModel {
     Long id;
     String username;
     String password;
