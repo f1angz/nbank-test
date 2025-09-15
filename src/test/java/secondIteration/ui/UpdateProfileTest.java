@@ -3,8 +3,6 @@ package secondIteration.ui;
 import api.generators.EntityGenerator;
 import api.models.CustomerRs;
 import api.models.UpdateProfileRq;
-import api.models.UpdateProfileRs;
-import api.models.comparison.JsonComparator;
 import common.annotations.UserSession;
 import common.storage.SessionStorage;
 import firstiteration.ui.BaseUiTest;

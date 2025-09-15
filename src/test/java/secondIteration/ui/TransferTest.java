@@ -26,15 +26,17 @@ public class TransferTest extends BaseUiTest {
         SessionStorage.getSteps().depositMoney(sendAccount.getId(), TestDataGenerator.randomBalance());
 
         Double amount = TestDataGenerator.randomSmallBalance();
-        assertThat(new TransferPage().open()
+        Boolean actualResult = new TransferPage().open()
                 .transferMoney(sendAccount, recAccount, amount)
                 .checkAlertMessageAndAccept(BankAlerts.TRANSFER_SUCCESSFULLY)
                 .getMatchingTransactions().stream().anyMatch(transactionsBage ->
-                        transactionsBage.getTransactionsText().contains(TransactionsType.TRANSFER_OUT + " - $" + String.format("%.2f", amount))))
-                .isTrue();
-        assertThat(new TransferPage().open().getMatchingTransactions().stream().anyMatch(transactionsBage ->
-                transactionsBage.getTransactionsText().contains(TransactionsType.TRANSFER_IN + " - $" + String.format("%.2f", amount))))
-                .isTrue();
+                        transactionsBage.getTransactionsText().contains(TransactionsType.TRANSFER_OUT + " - $" + String.format("%.2f", amount)));
+        assertThat(actualResult).isTrue();
+
+        String expectedBalance = String.format("%.2f", amount);
+        actualResult = new TransferPage().open().getMatchingTransactions().stream().anyMatch(transactionsBage ->
+                transactionsBage.getTransactionsText().contains(TransactionsType.TRANSFER_IN + " - $" + expectedBalance));
+        assertThat(actualResult).isTrue();
 
         assertThat(SessionStorage.getSteps().getAllTransactions(sendAccount.getId()).size()).isEqualTo(2);
         assertThat(SessionStorage.getSteps().getAllTransactions(recAccount.getId()).size()).isEqualTo(1);

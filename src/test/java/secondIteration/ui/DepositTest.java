@@ -21,12 +21,13 @@ public class DepositTest extends BaseUiTest {
         Double balance = TestDataGenerator.randomBalance();
         CreateAccountRs account = SessionStorage.getSteps().createAccount();
 
-        assertThat(new DepositMoneyPage().open()
+        Boolean actualResult = new DepositMoneyPage().open()
                 .depositMoney(1, balance)
                 .checkAlertMessageAndAccept(BankAlerts.DEPOSIT_SUCCESSFULLY)
                 .getPage(TransferPage.class).open()
                 .getMatchingTransactions().stream().anyMatch(transactionsBage ->
-                        transactionsBage.getTransactionsText().contains(TransactionsType.DEPOSIT + " - $" + String.format("%.2f", balance)))).isTrue();
+                        transactionsBage.getTransactionsText().contains(TransactionsType.DEPOSIT + " - $" + String.format("%.2f", balance)));
+        assertThat(actualResult).isTrue();
 
         assertThat(SessionStorage.getSteps().getAllTransactions(account.getId()).size()).isEqualTo(1);
     }
