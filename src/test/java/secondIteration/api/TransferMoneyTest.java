@@ -22,7 +22,7 @@ public class TransferMoneyTest extends BaseTest {
     private final JsonComparator comparator = new JsonComparator();
 
     @Test
-    public void successfulTransferBetweenAccounts() {
+    public void successfulTransferBetweenAccountsTest() {
         CreateUserRq user = AdminSteps.createUser();
 
         TransferRq transferRq = TransferStep.createValidTransferRequest(user.getUsername(),
@@ -40,7 +40,7 @@ public class TransferMoneyTest extends BaseTest {
     }
 
     @Test
-    public void transferWithInsufficientBalance() {
+    public void transferWithInsufficientBalanceTest() {
         CreateUserRq user = AdminSteps.createUser();
         CreateAccountRs account = AccountStep.createAccountForUser(user.getUsername(), user.getPassword());
         DepositMoneyRq deposit = DepositMoneyRq.builder()
@@ -71,7 +71,7 @@ public class TransferMoneyTest extends BaseTest {
     }
 
     @Test
-    public void transferToNonExistentAccount() {
+    public void transferToNonExistentAccountTest() {
         CreateUserRq user = AdminSteps.createUser();
 
         TransferRq transferRq = TransferStep.createValidTransferRequest(user.getUsername(),
@@ -87,7 +87,7 @@ public class TransferMoneyTest extends BaseTest {
     }
 
     @Test
-    public void transferFromNonExistentAccount() {
+    public void transferFromNonExistentAccountTest() {
         CreateUserRq user = AdminSteps.createUser();
 
         CreateAccountRs receiverAccount = AccountStep.createAccountForUser(user.getUsername(), user.getPassword());
@@ -106,7 +106,7 @@ public class TransferMoneyTest extends BaseTest {
     }
 
     @Test
-    public void transferWithoutAuthentication() {
+    public void transferWithoutAuthenticationTest() {
         CreateUserRq user = AdminSteps.createUser();
 
         TransferRq transferRq = TransferStep.createValidTransferRequest(
@@ -122,7 +122,7 @@ public class TransferMoneyTest extends BaseTest {
     }
 
     @Test
-    public void transferToSameAccount() {
+    public void transferToSameAccountTest() {
         CreateUserRq user = AdminSteps.createUser();
 
         TransferRq transferRq = TransferStep.createValidTransferRequest(user.getUsername(),
@@ -139,7 +139,7 @@ public class TransferMoneyTest extends BaseTest {
 
     @ParameterizedTest
     @MethodSource("invalidTransferAmountsProvider")
-    public void transferWithInvalidAmount(Double amount) {
+    public void transferWithInvalidAmountTest(Double amount) {
         CreateUserRq user = AdminSteps.createUser();
 
         TransferRq transferRq = TransferStep.createValidTransferRequest(user.getUsername(),

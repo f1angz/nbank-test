@@ -1,7 +1,10 @@
 package ui.pages;
 
+import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.ElementsCollection;
+import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
+import common.utils.RetryUtils;
 import lombok.Getter;
 import org.openqa.selenium.By;
 import ui.elements.UserBage;
@@ -32,5 +35,12 @@ public class AdminPanel extends BasePage<AdminPanel> {
         return generatePageElements(collection, UserBage::new);
     }
 
-
+    public UserBage findUserByUsername(String username) {
+        return RetryUtils.retry(
+                () -> getAlLUsers().stream().filter(it -> it.getUsername().equals(username)).findFirst().orElse(null),
+                result -> result != null,
+                3,
+                1000
+        );
+    }
 }

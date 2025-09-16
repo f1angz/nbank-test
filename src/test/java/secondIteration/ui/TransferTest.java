@@ -1,7 +1,6 @@
 package secondIteration.ui;
 
 import api.models.CreateAccountRs;
-import api.models.TransactionsRs;
 import api.models.TransactionsType;
 import api.utils.TestDataGenerator;
 import common.annotations.UserSession;
@@ -10,8 +9,6 @@ import firstiteration.ui.BaseUiTest;
 import org.junit.jupiter.api.Test;
 import ui.pages.BankAlerts;
 import ui.pages.TransferPage;
-
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
