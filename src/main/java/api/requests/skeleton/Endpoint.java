@@ -37,6 +37,11 @@ public enum Endpoint {
             UpdateProfileRq.class,
             UpdateProfileRs.class
     ),
+    GET_PROFILE(
+            "customer/profile",
+            BaseModel.class,
+            CustomerRs.class
+    ),
     GET_TRANSACTIONS(
             "accounts/{id}/transactions",
             BaseModel.class,

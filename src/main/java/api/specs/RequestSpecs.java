@@ -38,6 +38,7 @@ public class RequestSpecs {
     }
 
     public static RequestSpecification authAsUser(String username, String password) {
+        String token = getUserAuthHeader(username, password);
         return defaultRequestBuilder()
                 .addHeader("Authorization", getUserAuthHeader(username, password))
                 .build();

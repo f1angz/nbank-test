@@ -1,4 +1,4 @@
-package secondIteration;
+package secondIteration.api;
 
 import api.models.*;
 import firstiteration.api.BaseTest;

@@ -10,6 +10,8 @@ import static com.codeborne.selenide.Selenide.$;
 public class UserPage extends BasePage<UserPage> {
     private SelenideElement welcomeText = $(".welcome-text");
     private SelenideElement createNewAccount = $(By.xpath("//*[text()='➕ Create New Account']"));
+    private SelenideElement depositMoney = $(By.xpath("//*[text()='\uD83D\uDCB0 Deposit Money']"));
+    private SelenideElement makeTransfer = $(By.xpath("//*[text()='\uD83D\uDD04 Make a Transfer']"));
 
     @Override
     public String url() {

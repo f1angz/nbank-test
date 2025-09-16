@@ -14,5 +14,5 @@ public class CreateAccountRs extends BaseModel {
     Long id;
     String accountNumber;
     Double balance;
-    List<String> transactions;
+    List<TransactionsRs> transactions;
 }

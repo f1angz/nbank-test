@@ -34,12 +34,21 @@ public class CrudRequesters extends HttpRequest implements CrudEndpointInterface
 
     @Override
     public ValidatableResponse get(Long id) {
-        return given()
-                .spec(requestSpecification)
-                .get(endpoint.getUrl().replace("{id}", id.toString()))
-                .then()
-                .assertThat()
-                .spec(responseSpecification);
+        if (id != null) {
+            return given()
+                    .spec(requestSpecification)
+                    .get(endpoint.getUrl().replace("{id}", id.toString()))
+                    .then()
+                    .assertThat()
+                    .spec(responseSpecification);
+        } else {
+            return given()
+                    .spec(requestSpecification)
+                    .get(endpoint.getUrl())
+                    .then()
+                    .assertThat()
+                    .spec(responseSpecification);
+        }
     }
 
     @Override

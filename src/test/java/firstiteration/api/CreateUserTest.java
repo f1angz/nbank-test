@@ -20,7 +20,7 @@ import java.util.stream.Stream;
 public class CreateUserTest extends BaseTest {
 
     @Test
-    public void adminCanCreateUserWithCorrectData() {
+    public void adminCanCreateUserWithCorrectDataTest() {
         CreateUserRq createUserRq = EntityGenerator.generate(CreateUserRq.class);
 
         CreateUserRs createUserRs = new ValidatedCrudRequesters<CreateUserRs>(
@@ -35,7 +35,7 @@ public class CreateUserTest extends BaseTest {
 
     @ParameterizedTest
     @MethodSource("userInvalidDataProvider")
-    public void adminCanCreateUserWithInvalidData(String username, String password, String role, String errorKey, List<String> errorText) {
+    public void adminCannotCreateUserWithInvalidDataTest(String username, String password, String role, String errorKey, List<String> errorText) {
         CreateUserRq createUserRq = CreateUserRq.builder()
                 .username(username)
                 .password(password)
