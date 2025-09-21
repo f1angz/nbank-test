@@ -40,7 +40,7 @@ public class AdminPanel extends BasePage<AdminPanel> {
                 () -> getAlLUsers().stream().filter(it -> it.getUsername().equals(username)).findFirst().orElse(null),
                 result -> result != null,
                 3,
-                1000
+                300
         );
     }
 }

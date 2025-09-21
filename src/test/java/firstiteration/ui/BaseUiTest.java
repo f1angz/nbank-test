@@ -22,9 +22,10 @@ public class BaseUiTest extends BaseTest {
         Configuration.baseUrl = Config.getProperty("ui.baseUrl");
         Configuration.browser = Config.getProperty("ui.browser");
         Configuration.browserSize = Config.getProperty("ui.browserSize");
+        Configuration.headless = true;
 
         Configuration.browserCapabilities.setCapability("selenoid:options",
-                Map.of("enableVNC", true,
+                Map.of("enableVNC", false,
                         "enabledLog", true));
     }
 }

@@ -8,6 +8,7 @@ import api.requests.skeleton.requests.ValidatedCrudRequesters;
 import api.specs.RequestSpecs;
 import api.specs.ResponseSpecs;
 
+import java.sql.SQLOutput;
 import java.util.List;
 
 public class AdminSteps {
@@ -25,8 +26,9 @@ public class AdminSteps {
     }
 
     public static List<CreateUserRs> getAllUsers() {
-        return new ValidatedCrudRequesters<CreateUserRs>(RequestSpecs.adminSpec(),
+        var response = new ValidatedCrudRequesters<CreateUserRs>(RequestSpecs.adminSpec(),
                 ResponseSpecs.requestReturnsOK(),
                 Endpoint.ADMIN_USER).getAll(CreateUserRs[].class);
+        return response;
     }
 }
