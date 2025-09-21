@@ -6,8 +6,11 @@ import com.codeborne.selenide.Condition;
 import common.annotations.Browsers;
 import org.junit.jupiter.api.Test;
 import ui.pages.AdminPanel;
+import ui.pages.BankAlerts;
 import ui.pages.LoginPage;
 import ui.pages.UserPage;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class LoginUserTest extends BaseUiTest {
 
@@ -24,7 +27,6 @@ public class LoginUserTest extends BaseUiTest {
     @Test
     public void userCanLoginWithCorrectDataTest() {
         CreateUserRq user = AdminSteps.createUser();
-
         new LoginPage().open().login(user.getUsername(), user.getPassword()).getPage(UserPage.class).getWelcomeText()
                 .shouldBe(Condition.visible).shouldHave(Condition.text("Welcome, noname!"));
     }

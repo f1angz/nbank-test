@@ -1,4 +1,4 @@
-package secondIteration;
+package secondIteration.api;
 
 import firstiteration.api.BaseTest;
 import api.generators.EntityGenerator;

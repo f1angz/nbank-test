@@ -16,13 +16,12 @@ public class CreateAccountTest extends BaseUiTest {
     @Test
     @UserSession
     public void userCanCreateAccountTest() {
-        new UserPage().open().createNewAccount();
+        new UserPage().open().createNewAccount()
+                .checkAlertMessageAndAccept(BankAlerts.NEW_ACCOUNT_CREATED);
 
         List<CreateAccountRs> createdAccounts = SessionStorage.getSteps()
                 .getAllAccounts();
         assertThat(createdAccounts).hasSize(1);
-
-        new UserPage().checkAlertMessageAndAccept(BankAlerts.NEW_ACCOUNT_CREATED.getMessage() + createdAccounts.getFirst().getAccountNumber());
 
         assertThat(createdAccounts.getFirst().getBalance()).isZero();
 

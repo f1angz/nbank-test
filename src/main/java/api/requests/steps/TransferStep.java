@@ -10,8 +10,7 @@ import api.utils.TestDataGenerator;
 public class TransferStep {
 
     public static TransferRq createValidTransferRequest(String username, String password, Double amount) {
-        CreateUserRq user = AdminSteps.createUser();
-        CreateAccountRs account = AccountStep.createAccountForUser(user.getUsername(), user.getPassword());
+        CreateAccountRs account = AccountStep.createAccountForUser(username, password);
         DepositMoneyRq deposit = DepositMoneyRq.builder()
                 .id(account.getId())
                 .balance(TestDataGenerator.randomBalance())
