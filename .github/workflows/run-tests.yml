@@ -28,11 +28,11 @@ jobs:
       - name: Make mvnw executable
         run: chmod +x mvnw
 
-      - name: Set up services and run test
+      - name: Set up services
         run: |
           cd infra/dockercompose
           bash run-docker.sh
           cd ../..
 
       - name: Run tests
-        run: ./mvnw clean test
+        run: ./mvnw clean test -q
