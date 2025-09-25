@@ -16,4 +16,4 @@ for image in $images; do
   docker pull "$image"
 done
 echo ">>> Запуск Docker Compose"
-docker compose up
+docker compose up -d
