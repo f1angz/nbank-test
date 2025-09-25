@@ -31,7 +31,7 @@ jobs:
       - name: Set up services
         run: |
           cd infra/dockercompose
-          bash run-docker.sh
+          bash restart-docker.sh
           cd ../..
 
       - name: Run tests
