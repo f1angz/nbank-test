@@ -31,5 +31,8 @@ jobs:
       - name: Set up services and run test
         run: |
           cd infra/dockercompose
-          bash run-tests-with-docker-compose.sh
+          bash run-docker.sh
           cd ../..
+
+      - name: Run tests
+        run: ./mvnw clean test
