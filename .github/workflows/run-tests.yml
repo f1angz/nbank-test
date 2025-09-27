@@ -41,7 +41,7 @@ jobs:
 
       - name: Wait for services
         run: |
-          dockerize -wait tcp://backend:4111 -wait tcp://frontend:3000 -timeout 60s
+          dockerize -wait tcp://localhost:4111 -timeout 60s
 
       - name: Run tests
         run: ./mvnw clean test -q
