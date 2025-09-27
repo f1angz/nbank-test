@@ -5,11 +5,6 @@ services:
       - "4111:4111"
     networks:
       - nbank-network
-    healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:4111/actuator/health" ]
-      interval: 5s
-      timeout: 2s
-      retries: 10
   frontend:
     image: nobugsme/nbank-ui:latest
     expose:

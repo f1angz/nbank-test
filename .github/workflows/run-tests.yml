@@ -34,5 +34,14 @@ jobs:
           bash restart-docker.sh
           cd ../..
 
+      - name: Install dockerize
+        run: |
+          curl -sSL https://github.com/jwilder/dockerize/releases/download/v0.6.1/dockerize-linux-amd64-v0.6.1.tar.gz \
+          | sudo tar -C /usr/local/bin -xz
+
+      - name: Wait for services
+        run: |
+          dockerize -wait tcp://backend:4111 -wait tcp://frontend:3000 -timeout 60s
+
       - name: Run tests
         run: ./mvnw clean test -q
