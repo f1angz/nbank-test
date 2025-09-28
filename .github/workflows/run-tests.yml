@@ -1,6 +1,6 @@
 name: Run tests
 
-on: [ push, workflow_dispatch]
+on: [ push, workflow_dispatch ]
 
 jobs:
   run-tests:
@@ -29,23 +29,7 @@ jobs:
         run: chmod +x mvnw
 
       - name: Set up services
-        run: |
-          cd infra/dockercompose
-          bash restart-docker.sh
-          cd ../..
-
-      - name: Wait for backend to be healthy
-        run: |
-          for i in {1..30}; do
-            if curl -s http://backend:4111/actuator/health | grep -q '"UP"'; then
-              echo "Backend is UP"
-              exit 0
-            fi
-            echo "Waiting for backend..."
-            sleep 5
-          done
-          echo "Backend did not start in time" >&2
-          exit 1
+        run: cd infra/dockercompose && bash restart-docker.sh && cd ../..
 
       - name: Run tests
         run: ./mvnw clean test -q
