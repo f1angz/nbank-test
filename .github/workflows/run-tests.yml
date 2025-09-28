@@ -1,10 +1,9 @@
 name: Run tests
 
-on: [ push, workflow_dispatch ]
+on: [push, workflow_dispatch]
 
 jobs:
   run-tests:
-    name: Set up services and run tests
     runs-on: ubuntu-latest
 
     steps:
@@ -14,7 +13,7 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v4
         with:
-          distribution: 'oracle'
+          distribution: 'temurin'
           java-version: '21'
 
       - name: Cache Maven Repository
@@ -28,13 +27,7 @@ jobs:
       - name: Make mvnw executable
         run: chmod +x mvnw
 
-      - name: Set up services
-        run: cd infra/dockercompose && bash restart-docker.sh && cd ../..
-
-      - name: Wait for backend to be ready
+      - name: Start Docker Compose and run tests
         run: |
-          chmod +x ./infra/dockercompose/wait-for-backend.sh
-          ./infra/dockercompose/wait-for-backend.sh
-
-      - name: Run tests
-        run: ./mvnw clean test -q
+          docker compose -f docker-compose.ci.yml up --build --abort-on-container-exit
+          docker compose -f docker-compose.ci.yml down

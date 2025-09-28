@@ -1,3 +1,5 @@
+version: "3.9"
+
 services:
   backend:
     image: nobugsme/nbank:with_validation_fix
@@ -6,39 +8,49 @@ services:
     networks:
       - nbank-network
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:4111/actuator/health" ]
+      test: ["CMD", "curl", "-f", "http://localhost:4111/actuator/health"]
       interval: 10s
       timeout: 5s
-      retries: 5
+      retries: 10
+
   frontend:
     image: nobugsme/nbank-ui:latest
-    expose:
-      - "3000:80"
     depends_on:
-      - backend
+      backend:
+        condition: service_healthy
     networks:
       - nbank-network
+
   selenoid:
     image: aerokube/selenoid:latest
-    ports:
-      - "4444:4444"
     volumes:
-      - //var/run/docker.sock:/var/run/docker.sock
+      - /var/run/docker.sock:/var/run/docker.sock
       - ./config/:/etc/selenoid/:ro
     command: ["-container-network", "nbank-network"]
     depends_on:
-      - frontend
+      frontend:
+        condition: service_healthy
     networks:
       - nbank-network
-  selenoid-ui:
-    image: aerokube/selenoid-ui:latest
-    ports:
-      - "6567:8080"
-    command: ["--selenoid-uri", "http://selenoid:4444"]
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4444/status"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  test-runner:
+    image: maven:3.9.11-eclipse-temurin-21
+    working_dir: /app
+    volumes:
+      - ./:/app
     depends_on:
-      - selenoid
+      backend:
+        condition: service_healthy
+      selenoid:
+        condition: service_healthy
     networks:
       - nbank-network
+    command: mvn clean test -P api
 
 networks:
   nbank-network:
