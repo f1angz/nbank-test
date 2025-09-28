@@ -34,5 +34,18 @@ jobs:
           bash restart-docker.sh
           cd ../..
 
+      - name: Wait for backend to be healthy
+        run: |
+          for i in {1..30}; do
+            if curl -s http://localhost:4111/actuator/health | grep -q '"UP"'; then
+              echo "Backend is UP"
+              exit 0
+            fi
+            echo "Waiting for backend..."
+            sleep 5
+          done
+          echo "Backend did not start in time" >&2
+          exit 1
+
       - name: Run tests
         run: ./mvnw clean test -q
