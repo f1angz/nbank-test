@@ -28,6 +28,11 @@ jobs:
       - name: Make mvnw executable
         run: chmod +x mvnw
 
+      - name: Wait for backend to be ready
+        run: |
+          chmod +x ./infra/dockercompose/wait-for-backend.sh
+          ./infra/dockercompose/wait-for-backend.sh
+
       - name: Set up services
         run: cd infra/dockercompose && bash restart-docker.sh && cd ../..
 
