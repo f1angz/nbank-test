@@ -1,7 +1,7 @@
 FROM maven:3.9.11-eclipse-temurin-21
 
 ARG TEST_PROFILE=api
-ARG APIBASEURL=http://localhost:4111
+ARG APIBASEURL=http://backend:4111
 ARG UIBASEURL=http://localhost:3000
 
 ENV TEST_PROFILE=${TEST_PROFILE}

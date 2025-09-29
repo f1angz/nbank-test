@@ -31,5 +31,14 @@ jobs:
       - name: Set up services
         run: cd infra/dockercompose && bash restart-docker.sh && cd ../..
 
+      - name: Show running containers
+        run: docker ps -a
+
+      - name: Show backend logs
+        run: docker logs $(docker ps -qf "ancestor=nobugsme/nbank:with_username_error_fix") || true
+
+      - name: Show frontend logs
+        run: docker logs $(docker ps -qf "ancestor=nobugsme/nbank-ui:with_nginx") || true
+
       - name: Run tests
         run: ./mvnw clean test -q
