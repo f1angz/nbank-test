@@ -28,6 +28,24 @@ jobs:
       - name: Make mvnw executable
         run: chmod +x mvnw
 
+      - name: Check docker image architecture
+        run: |
+          for image in nobugsme/nbank:with_username_error_fix nobugsme/nbank-ui:with_nginx; do
+            echo "Checking $image ..."
+            if ! docker manifest inspect $image > manifest.json; then
+              echo "❌ Cannot inspect $image"
+              exit 1
+            fi
+
+            if ! grep -q '"architecture": "amd64"' manifest.json; then
+              echo "❌ Image $image does not have amd64 architecture!"
+              cat manifest.json | jq '.manifests[].platform'
+              exit 1
+            else
+              echo "✅ $image supports amd64"
+            fi
+          done
+
       - name: Set up services
         run: cd infra/dockercompose && bash restart-docker.sh && cd ../..
 
