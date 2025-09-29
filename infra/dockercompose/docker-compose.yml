@@ -1,6 +1,7 @@
 services:
   backend:
     image: nobugsme/nbank:with_username_error_fix
+    platform: linux/amd64
     ports:
       - "4111:4111"
     networks:
