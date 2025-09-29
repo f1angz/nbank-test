@@ -35,10 +35,10 @@ jobs:
         run: docker ps -a
 
       - name: Show backend logs
-        run: docker logs $(docker ps -qf "ancestor=nobugsme/nbank:with_username_error_fix") || true
+        run: docker logs dockercompose-backend-1 || true
 
       - name: Show frontend logs
-        run: docker logs $(docker ps -qf "ancestor=nobugsme/nbank-ui:with_nginx") || true
+        run: docker logs dockercompose-frontend-1 || true
 
       - name: Run tests
         run: ./mvnw clean test -q
