@@ -9,6 +9,7 @@ services:
 
   frontend:
     image: nobugsme/nbank-ui:with_nginx
+    platform: linux/amd64
     ports:
       - "3000:80"
     depends_on:
