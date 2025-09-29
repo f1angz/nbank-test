@@ -1,7 +1,7 @@
 #!/bin/bash
 for i in {1..30}; do
   echo "Waiting for backend..."
-  if curl -s http://backend:4111/actuator/health > /dev/null; then
+  if curl -s http://localhost:4111/actuator/health > /dev/null; then
     echo "Backend is up!"
     exit 0
   fi

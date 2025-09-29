@@ -45,5 +45,8 @@ jobs:
       - name: Show frontend logs
         run: docker logs dockercompose-frontend-1 || true
 
+      - name: Wait for backend
+        run: cd infra/dockercompose && bash wait-for-backend.sh
+
       - name: Run tests
         run: ./mvnw clean test -q
