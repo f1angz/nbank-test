@@ -28,6 +28,11 @@ jobs:
       - name: Make mvnw executable
         run: chmod +x mvnw
 
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+        with:
+          platforms: arm64
+
       - name: Set up services
         run: cd infra/dockercompose && bash restart-docker.sh && cd ../..
 
