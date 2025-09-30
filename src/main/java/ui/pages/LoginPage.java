@@ -1,6 +1,7 @@
 package ui.pages;
 
 import com.codeborne.selenide.SelenideElement;
+import io.qameta.allure.Attachment;
 import lombok.Getter;
 
 import static com.codeborne.selenide.Selenide.$;
@@ -14,6 +15,7 @@ public class LoginPage extends BasePage<LoginPage> {
         return "/login";
     }
 
+    @Attachment(value = "Screenshot", type = "image/png")
     public LoginPage login(String username, String password) {
         usernameInput.sendKeys(username);
         passwordInput.sendKeys(password);

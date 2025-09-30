@@ -3,6 +3,7 @@ package ui.pages;
 import api.models.CreateAccountRs;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
+import io.qameta.allure.Attachment;
 import ui.elements.TransactionsBage;
 
 import java.util.List;
@@ -24,6 +25,7 @@ public class TransferPage extends BasePage<TransferPage>{
         return "/transfer";
     }
 
+    @Attachment(value = "Screenshot", type = "image/png")
     public List<TransactionsBage> getMatchingTransactions() {
         refresh();
         transferAgain.click();
@@ -31,6 +33,7 @@ public class TransferPage extends BasePage<TransferPage>{
         return generatePageElements(collection, TransactionsBage::new);
     }
 
+    @Attachment(value = "Screenshot", type = "image/png")
     public TransferPage transferMoney(CreateAccountRs senderAccNumber, CreateAccountRs recipientAccNumber, Double amount) {
         newTransfer.click();
         selectYourAccount.selectOptionByValue(senderAccNumber.getId().toString());

@@ -39,8 +39,5 @@ jobs:
       - name: Wait for backend
         run: cd infra/dockercompose && bash wait-for-backend.sh && cd ../..
 
-      - name: List Selenoid container logs
-        run: docker logs dockercompose-selenoid-1 || true
-
       - name: Run tests
         run: ./mvnw clean test -q

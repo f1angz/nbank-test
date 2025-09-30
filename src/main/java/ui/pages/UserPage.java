@@ -1,6 +1,7 @@
 package ui.pages;
 
 import com.codeborne.selenide.SelenideElement;
+import io.qameta.allure.Attachment;
 import lombok.Getter;
 import org.openqa.selenium.By;
 
@@ -18,6 +19,7 @@ public class UserPage extends BasePage<UserPage> {
         return "/dashboard";
     }
 
+    @Attachment(value = "Screenshot", type = "image/png")
     public UserPage createNewAccount() {
         createNewAccount.click();
         return this;

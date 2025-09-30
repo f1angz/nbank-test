@@ -5,6 +5,7 @@ import api.specs.RequestSpecs;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
+import io.qameta.allure.Attachment;
 import lombok.Getter;
 import org.openqa.selenium.Alert;
 import ui.elements.BaseElement;
@@ -29,6 +30,7 @@ public abstract class BasePage<T extends BasePage> {
         return Selenide.page(pageClass);
     }
 
+    @Attachment(value = "Screenshot", type = "image/png")
     public T checkAlertMessageAndAccept(BankAlerts bankAlert) {
         Alert alert = switchTo().alert();
         String actual = alert.getText();
@@ -42,7 +44,6 @@ public abstract class BasePage<T extends BasePage> {
         alert.accept();
         return (T) this;
     }
-
 
     public static void authAsUser(String username, String password) {
         Selenide.open("/login");
