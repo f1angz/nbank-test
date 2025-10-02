@@ -6,6 +6,7 @@ import api.requests.skeleton.requests.CrudRequesters;
 import api.requests.skeleton.requests.ValidatedCrudRequesters;
 import api.specs.RequestSpecs;
 import api.specs.ResponseSpecs;
+import common.helpers.StepLogger;
 
 import java.util.List;
 
@@ -19,11 +20,13 @@ public class UserSteps {
     }
 
     public List<CreateAccountRs> getAllAccounts() {
-        return new ValidatedCrudRequesters<CreateAccountRs>(
-                RequestSpecs.authAsUser(username, password),
-                ResponseSpecs.requestReturnsOK(),
-                Endpoint.CUSTOMER_ACCOUNTS
-        ).getAll(CreateAccountRs[].class);
+        return StepLogger.log("Пользователь " + username + " получает список всех аккаунтов", () -> {
+            return new ValidatedCrudRequesters<CreateAccountRs>(
+                    RequestSpecs.authAsUser(username, password),
+                    ResponseSpecs.requestReturnsOK(),
+                    Endpoint.CUSTOMER_ACCOUNTS
+            ).getAll(CreateAccountRs[].class);
+        });
     }
 
     public CreateAccountRs createAccount() {

@@ -3,6 +3,8 @@ package api.requests.skeleton.requests;
 import api.models.CreateUserRs;
 import api.requests.skeleton.interfaces.GetAllEndpointInterface;
 import api.specs.RequestSpecs;
+import common.helpers.StepLogger;
+import io.qameta.allure.Step;
 import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.RequestSpecification;
 import io.restassured.specification.ResponseSpecification;
@@ -22,33 +24,37 @@ public class CrudRequesters extends HttpRequest implements CrudEndpointInterface
 
     @Override
     public ValidatableResponse post(BaseModel model) {
-        var body = model == null ? "" : model;
-        return given()
-                .spec(requestSpecification)
-                .body(body)
-                .post(endpoint.getUrl())
-                .then()
-                .assertThat()
-                .spec(responseSpecification);
+        return StepLogger.log("POST запрос на " + endpoint.getUrl(), () -> {
+            var body = model == null ? "" : model;
+            return given()
+                    .spec(requestSpecification)
+                    .body(body)
+                    .post(endpoint.getUrl())
+                    .then()
+                    .assertThat()
+                    .spec(responseSpecification);
+        });
     }
 
     @Override
     public ValidatableResponse get(Long id) {
-        if (id != null) {
-            return given()
-                    .spec(requestSpecification)
-                    .get(endpoint.getUrl().replace("{id}", id.toString()))
-                    .then()
-                    .assertThat()
-                    .spec(responseSpecification);
-        } else {
-            return given()
-                    .spec(requestSpecification)
-                    .get(endpoint.getUrl())
-                    .then()
-                    .assertThat()
-                    .spec(responseSpecification);
-        }
+        return StepLogger.log("GET запрос на " + endpoint.getUrl(), () -> {
+            if (id != null) {
+                return given()
+                        .spec(requestSpecification)
+                        .get(endpoint.getUrl().replace("{id}", id.toString()))
+                        .then()
+                        .assertThat()
+                        .spec(responseSpecification);
+            } else {
+                return given()
+                        .spec(requestSpecification)
+                        .get(endpoint.getUrl())
+                        .then()
+                        .assertThat()
+                        .spec(responseSpecification);
+            }
+        });
     }
 
     @Override
@@ -63,22 +69,26 @@ public class CrudRequesters extends HttpRequest implements CrudEndpointInterface
 
     @Override
     public ValidatableResponse put(BaseModel model) {
-        var body = model == null ? "" : model;
-        return given()
-                .spec(requestSpecification)
-                .body(body)
-                .put(endpoint.getUrl())
-                .then()
-                .assertThat()
-                .spec(responseSpecification);
+        return StepLogger.log("PUT запрос на " + endpoint.getUrl(), () -> {
+            var body = model == null ? "" : model;
+            return given()
+                    .spec(requestSpecification)
+                    .body(body)
+                    .put(endpoint.getUrl())
+                    .then()
+                    .assertThat()
+                    .spec(responseSpecification);
+        });
     }
 
     @Override
     public ValidatableResponse getAll(Class<?> clazz) {
-        return  given()
-                .spec(requestSpecification)
-                .get(endpoint.getUrl())
-                .then().assertThat()
-                .spec(responseSpecification);
+        return StepLogger.log("GET запрос на " + endpoint.getUrl(), () -> {
+            return  given()
+                    .spec(requestSpecification)
+                    .get(endpoint.getUrl())
+                    .then().assertThat()
+                    .spec(responseSpecification);
+        });
     }
 }

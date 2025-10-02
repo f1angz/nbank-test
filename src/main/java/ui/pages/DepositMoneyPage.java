@@ -1,6 +1,7 @@
 package ui.pages;
 
 import com.codeborne.selenide.SelenideElement;
+import io.qameta.allure.Attachment;
 
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$x;
@@ -16,6 +17,7 @@ public class DepositMoneyPage extends BasePage<DepositMoneyPage> {
         return "/deposit";
     }
 
+    @Attachment(value = "Screenshot", type = "image/png")
     public DepositMoneyPage depositMoney(int accountNumber, Double amount)  {
         accountSelect.selectOption(accountNumber);
         amountInput.sendKeys(amount.toString());
